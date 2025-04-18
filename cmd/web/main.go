@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"hello_world/pkg/config"
-	"hello_world/pkg/handlers"
-	"hello_world/pkg/render"
+	"go_learning/pkg/config"
+	"go_learning/pkg/handlers"
+	"go_learning/pkg/render"
 	"log"
 	"net/http"
 )
@@ -19,11 +19,15 @@ func main() {
 		log.Fatal("cannot create template cache")
 	}
 	app.TemplateCache = tc
+	app.UseCache = false
+
+	repo := handlers.NewRepo(&app)
+	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
 
-	http.HandleFunc("/", handlers.Home)
-	http.HandleFunc("/about", handlers.About)
+	http.HandleFunc("/", handlers.Repo.Home)
+	http.HandleFunc("/about", handlers.Repo.About)
 	_, _ = fmt.Printf("Starting application on port %s\n", portNumber)
 	_ = http.ListenAndServe(portNumber, nil)
 }

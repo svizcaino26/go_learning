@@ -2,7 +2,7 @@ package render
 
 import (
 	"bytes"
-	"hello_world/pkg/config"
+	"go_learning/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
@@ -17,8 +17,13 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	// get the template cache from the app config
-	tc := app.TemplateCache
+	var tc map[string]*template.Template
+	if app.UseCache {
+		// get the template cache from the app config
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
+	}
 
 	// get requested template
 	template, ok := tc[tmpl]
